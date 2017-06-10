@@ -16,6 +16,8 @@ class Airtable:
 
     self.auth_header = {'Authorization': 'Bearer %s' % self.api_key}
     self.records = None
+    self.data = None
+    self.field_names = None
 
   def get_records(self, parse_data = False):
     records = []
@@ -74,7 +76,8 @@ class Airtable:
       for fn in field_names:
         if fn not in all_fields:
           all_fields.append(fn)
-
+    self.field_names = all_fields
+    
     # Now, read the table data and put into a rectangular form
     # a list of dictionaries, all with the same keys
     # if there is data missing for a particular key, fill in with None
@@ -93,4 +96,19 @@ class Airtable:
       data.append(rec_dict)
 
     self.data = data
+    
+    
+  def column_data(self, col_name):
+    if col_name not in self.field_names:
+      print("%s is not a valid field name" % col_name)
+      return(None)
+      
+    col_data = []
+    if self.data is not None:
+      for d in self.data:
+        col_data.append(d[col_name])
+    else:
+      print("data has not yet been parsed; use parse_data method")
+      
+    return(col_data)
 
