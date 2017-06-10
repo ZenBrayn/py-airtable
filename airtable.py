@@ -69,8 +69,9 @@ class Airtable:
       return(None)
 
     # First, figure out the union of all the record field names
-    all_fields = []
-    for rec in self.records:
+    # always store the record id
+    all_fields = ['id']
+    for rec in self.records:      
       fields = rec['fields']
       field_names = fields.keys()
       for fn in field_names:
@@ -84,10 +85,14 @@ class Airtable:
     data = []
     for rec in self.records:
       rec_dict = {}
+      rec_dict['id'] = rec['id']
+      
       fields = rec['fields']
 
       for fn in all_fields:
-        if fn in fields.keys():
+        if fn == 'id':
+          continue
+        elif fn in fields.keys():
           data_val = fields[fn]
         else:
           data_val = None
