@@ -19,11 +19,12 @@ class Airtable:
     self.data = None
     self.field_names = None
 
-  def get_records(self, parse_data = False):
+  def get_records(self, parse_data = False, verbose = False):
     records = []
     cntr = 0
-
-    print("Retrieving records from %s table" % self.table)
+    
+    if verbose:
+      print("Retrieving records from %s table" % self.table)
 
     while True:
       if cntr == 0:
@@ -37,7 +38,8 @@ class Airtable:
 
       if req.status_code == requests.codes.ok:
         cntr += 1
-        print(" Retrieving batch %d" % cntr)
+        if verbose:
+          print(" Retrieving batch %d" % cntr)
         req_json = req.json()
 
         # check for the offset
@@ -55,8 +57,11 @@ class Airtable:
           break
       else:
         print('Error getting records')
-
-    print(" Retrieved %d records" % len(records))
+        return(None)
+    
+    if verbose:
+      print(" Retrieved %d records" % len(records))
+    
     self.records = records
 
     if parse_data:
@@ -116,4 +121,3 @@ class Airtable:
       print("data has not yet been parsed; use parse_data method")
       
     return(col_data)
-
